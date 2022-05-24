@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				text-decoration: none;
+			}
+
+			body {
+				background: #646863;
+			}
+
+			img {
+				width: 1280px;
+				height: 722px;
+			}
+
+			#banner {
+				width: 1280px;
+				height: 722px;
+				overflow: hidden;
+				position: relative;
+			}
+
+			#img_list {
+				width: 7680px;
+				height: 722px;
+			}
+
+			#img_list li {
+				float: left;
+			}
+
+			#icon_list {
+				position: absolute;
+				right: 20px;
+				bottom: 20px;
+				list-style: none;
+			}
+
+			#icon_list li {
+				color: #E69800;
+				float: left;
+				height: 50px;
+				width: 50px;
+				border: 5px solid cadetblue;
+				border-radius: 50%;
+				line-height: 50px;
+				text-align: center;
+				margin-right: 15px;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="banner">
+			<ul id="img_list">
+				<li><img src="img1.png"></li>
+				<li><img src="img2.png"></li>
+				<li><img src="img3.png"></li>
+				<li><img src="img4.png"></li>
+				<li><img src="img1.png"></li>
+			</ul>
+			<ul id="icon_list">
+				<li>1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+			</ul>
+		</div>
+		<script type="text/javascript">
+			var imgs = document.getElementById('img_list').getElementsByTagName('li');
+			var icons = document.getElementById('icon_list').getElementsByTagName('li');
+			var Left = 0;
+			var timer;
+			// run();
+
+			function run() {
+				//图片切换到最后时，重新归零。
+				if (Left <= -5120) {
+					img_list.style.marginLeft = "0px";
+					Left = 0;
+				}
+				//用n表示图片切换和停留的时间，如果刚好显示，停2000，否则以10的速度切换（Left持续-10，直到再次刚好显示图片）
+				var n = (Left % 1280 == 0 ? 2000 : 10);
+				changeimg();
+				m = Math.floor(-Left / 1280);
+				changeicon(m);
+				Left -= 10;
+				//重复执行run方法。实现一直轮播。
+				timer = setTimeout(run, n);
+			}
+
+			function changeimg() {
+				//切换图片的方法、
+				img_list.style.marginLeft = Left + "px";
+			}
+
+			function changeicon(m) {
+				//切换图标变色的方法
+				for (var i = 0; i < icons.length; i++) {
+					//先全部取消颜色
+					icons[i].style.backgroundColor = "";
+				}
+				//再根据m的值判断第几个图标变红。
+				icons[m].style.backgroundColor = "red";
+			}
+			
+			// 变量作用域两种：全局变量、局部变量。js中函数内部可以读取全局变量，函数外部不能读取函数内部的局部变量。
+			
+			// js链式作用域：子对象会一级一级向上寻找所有父对象的变量，反之不行。
+			// f2可以读取f1中的变量，只要把f2作为返回值，就可以在f1外读取f1内部变量
+			for (var i = 0; i < imgs.length; i++) {
+				//根据第几个图标片来判断停止。正常来说，外部i访问不到下面函数的值，用了闭包后就能够读取了
+				//	闭包作用
+				// 1、读取函数内部的变量
+				// 2、让这些变量的值始终保持在内存中。不会再f1调用后被自动清除。
+				// 3、方便调用上下文的局部变量。利于代码封装。
+				// 原因：f1是f2的父函数，f2被赋给了一个全局变量，f2始终存在内存中，f2的存在依赖f1，因此f1也始终存在内存中，不会在调用结束后，被垃圾回收机制回收。
+				// 所以此处的i的值实际上为下面函数的i的值
+				//闭包()(i)
+				(function(i) {
+					imgs[i].onmousemove = function() {
+						clearTimeout(timer);//停止轮播
+						Left = -i * 1280;//使距离为完全显示图片的距离（以防在切换时放上去卡两张图片中间）
+						changeimg();//使用更改的Left去切换图片
+						changeicon(i);//切换对应图标
+					}
+					imgs[i].onmouseout = function() {
+						run();
+					}
+				})(i);
+			}
+			
+			//切换图标
+			for (var i = 0; i < icons.length; i++) {
+				//闭包()(i)
+				(function(i) {
+					icons[i].onmousemove = function() {
+						clearTimeout(timer);
+						Left = -i * 1280;
+						changeimg();
+						changeicon(i);
+					}
+					icons[i].onmouseout = function() {
+						run();
+					}
+				})(i);
+			}
+		</script>
+	</body>
+</html>
+
