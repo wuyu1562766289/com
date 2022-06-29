@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .box {
+      width: 300px;
+      height: 100px;
+      border: 1px solid #48b455;
+      position: relative;
+    }
+
+    .box:after,
+    .box:before {
+      content: '';
+      position: absolute;
+      width: 50px;
+      height: 25px;
+      transition: all .4s;
+    }
+
+    .box:before {
+      left: -4px;
+      top: -4px;
+      border-top: 1px solid #48b455;
+      border-left: 1px solid #48b455;
+    }
+
+    .box:after {
+      right: -4px;
+      bottom: -4px;
+      border-bottom: 1px solid #48b455;
+      border-right: 1px solid #48b455;
+    }
+
+    .box:hover:after,
+    .box:hover:before {
+      transition: all .3s;
+      width: 306px;
+      height: 107px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+</body>
+
+</html>
